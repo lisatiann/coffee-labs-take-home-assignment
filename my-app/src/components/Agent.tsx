@@ -5,13 +5,11 @@ import { AgentType } from '../types';
 import TaskMenu from './TaskMenu';
 
 interface AgentProps {
-  handleEditAgent: (agent: AgentType) => void;
-  handleDeleteAgent: (id: number) => void;
   agent: AgentType;
   toolBarTitles: Array<keyof AgentType>;
 }
 
-const Agent: React.FC<AgentProps> = ({ handleEditAgent, handleDeleteAgent, agent, toolBarTitles }) => {
+const Agent: React.FC<AgentProps> = ({ agent, toolBarTitles }) => {
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
 
   const handleClick = (event: React.MouseEvent<HTMLElement>) => {
@@ -48,7 +46,7 @@ const Agent: React.FC<AgentProps> = ({ handleEditAgent, handleDeleteAgent, agent
             horizontal: 'left',
           }}
         >
-          <TaskMenu agent={agent} handleEditAgent={handleEditAgent} handleDeleteAgent={handleDeleteAgent} handleClose={handleClose} />
+          <TaskMenu agent={agent} handleClose={handleClose} />
         </Popover>
       </TableCell>
     </TableRow>

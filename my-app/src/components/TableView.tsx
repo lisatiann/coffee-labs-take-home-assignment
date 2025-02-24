@@ -1,13 +1,11 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import Agent from "./Agent";
 import ToolBar from "./Toolbar";
 import AddAndEditDialog from "./AddAndEditDialog";
 import { Button, Table, TableBody, TableContainer, TableHead, Paper } from "@mui/material";
 import { statusOrder } from "../constant";
-import { mockData } from "../assets/mockData";
+import { useAgentContext } from "../context/AgentContext";
 import { AgentType } from "../types";
-
-const LOCAL_STORAGE_KEY = "agentsData";
 
 // manually set the order of priority and status
 const getOrderValue = (orderBy: string, value: string) => {
@@ -18,17 +16,11 @@ const getOrderValue = (orderBy: string, value: string) => {
 };
 
 const TableView: React.FC = () => {
+  const { agents } = useAgentContext();
   const toolBarTitles: Array<keyof AgentType> = ['name', 'email', 'status', 'lastSeen'];
-  const storedAgents = localStorage.getItem(LOCAL_STORAGE_KEY);
-  const initialAgents = storedAgents ? JSON.parse(storedAgents) : mockData;
-  const [agents, setAgents] = useState<AgentType[]>(initialAgents);
   const [order, setOrder] = useState<'asc' | 'desc'>('asc');
   const [orderBy, setOrderBy] = useState<keyof AgentType>('name');
   const [open, setOpen] = useState<boolean>(false);
-
-  useEffect(() => {
-    localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(agents));
-  }, [agents]);
 
   const handleRequestSort = (property: keyof AgentType) => {
     const isAsc = orderBy === property && order === 'asc';
@@ -42,19 +34,6 @@ const TableView: React.FC = () => {
     return (aValue < bValue ? -1 : 1) * (order === 'asc' ? 1 : -1);
   });
 
-  const handleCreateAgent = (agent: AgentType) => {
-    setAgents([...agents, agent]);
-  };
-
-  const handleEditAgent = (updatedAgent: AgentType) => {
-    const index = agents.findIndex(agent => agent.id === updatedAgent.id);
-    setAgents([...agents.slice(0, index), updatedAgent, ...agents.slice(index + 1)]);
-  };
-
-  const handleDeleteAgent = (id: number) => {
-    setAgents(agents.filter(agent => agent.id !== id));
-  };
-
   return (
     <div>
       <TableContainer component={Paper}>
@@ -64,7 +43,6 @@ const TableView: React.FC = () => {
           newID={agents.length + 1}
           open={open}
           onClose={() => setOpen(false)}
-          onCreate={handleCreateAgent}
         />
         <Table>
           <TableHead>
@@ -79,8 +57,6 @@ const TableView: React.FC = () => {
             {sortedAgents.map((agent, index) => (
               <Agent
                 key={index}
-                handleEditAgent={handleEditAgent}
-                handleDeleteAgent={handleDeleteAgent}
                 agent={agent}
                 toolBarTitles={toolBarTitles}
               />

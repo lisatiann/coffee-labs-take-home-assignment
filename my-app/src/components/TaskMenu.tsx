@@ -2,15 +2,15 @@ import { useState } from "react";
 import { MenuItem } from "@mui/material";
 import { AgentType } from "../types";
 import AddAndEditDialog from "./AddAndEditDialog";
+import { useAgentContext } from "../context/AgentContext";
 
 interface TaskMenuProps {
   agent: AgentType;
-  handleEditAgent: (agent: AgentType) => void;
-  handleDeleteAgent: (id: number) => void;
   handleClose: () => void;
 }
 
-const TaskMenu: React.FC<TaskMenuProps> = ({ agent, handleEditAgent, handleDeleteAgent, handleClose }) => {
+const TaskMenu: React.FC<TaskMenuProps> = ({ agent, handleClose }) => {
+  const { deleteAgent } = useAgentContext();
   const [openEdit, setOpenEdit] = useState<boolean>(false);
 
   const handleEditClick = () => {
@@ -18,7 +18,7 @@ const TaskMenu: React.FC<TaskMenuProps> = ({ agent, handleEditAgent, handleDelet
   };
 
   const handleDeleteClick = () => {
-    handleDeleteAgent(agent.id);
+    deleteAgent(agent.id);
     handleClose();
   };
 
@@ -26,7 +26,7 @@ const TaskMenu: React.FC<TaskMenuProps> = ({ agent, handleEditAgent, handleDelet
     <div>
       <MenuItem onClick={handleEditClick}>Edit</MenuItem>
       <MenuItem onClick={handleDeleteClick}>Delete</MenuItem>
-      <AddAndEditDialog isEditMode={true} agent={agent} open={openEdit} onClose={() => { setOpenEdit(false); handleClose(); }} onEdit={handleEditAgent} />
+      <AddAndEditDialog isEditMode={true} agent={agent} open={openEdit} onClose={() => { setOpenEdit(false); handleClose(); }} />
     </div>
   )
 }
