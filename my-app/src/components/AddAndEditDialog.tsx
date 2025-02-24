@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import { Button, Dialog, DialogActions, DialogContent, DialogTitle, FormControl, InputLabel, Select, MenuItem, TextField, SelectChangeEvent } from "@mui/material";
 import { statusOrder } from "../constant";
 import { AgentType } from "../types";
+import { useAgentContext } from "../context/AgentContext";
 
 interface AddAndEditDialogProps {
   isEditMode: boolean;
@@ -9,11 +10,10 @@ interface AddAndEditDialogProps {
   newID?: number;
   open: boolean;
   onClose: () => void;
-  onCreate?: (agent: AgentType) => void;
-  onEdit?: (agent: AgentType) => void;
 }
 
-const AddAndEditDialog: React.FC<AddAndEditDialogProps> = ({ isEditMode, agent, newID, open, onClose, onCreate, onEdit }) => {
+const AddAndEditDialog: React.FC<AddAndEditDialogProps> = ({ isEditMode, agent, newID, open, onClose }) => {
+  const { createAgent, editAgent } = useAgentContext();
   const [name, setName] = useState<string>("");
   const [email, setEmail] = useState<string>("");
   const [status, setStatus] = useState<string>("");
@@ -44,10 +44,10 @@ const AddAndEditDialog: React.FC<AddAndEditDialogProps> = ({ isEditMode, agent, 
     if (!email || !/\S+@\S+\.\S+/.test(email)) {
       return alert("A valid email is required");
     }
-    if (isEditMode && onEdit) {
-      onEdit(newAgent);
-    } else if (onCreate) {
-      onCreate(newAgent);
+    if (isEditMode) {
+      editAgent(newAgent);
+    } else {
+      createAgent(newAgent);
     }
     onClose();
     setName("");

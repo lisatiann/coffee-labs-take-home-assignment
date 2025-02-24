@@ -1,12 +1,15 @@
 import TableView from './components/TableView';
-import './App.css'
+import { AgentProvider } from './context/AgentContext';
+import './App.css';
 
 function App() {
   return (
-    <div className="App">
+    <AgentProvider>
+      <div className="App">
         <TableView />
-    </div>
+      </div>
+    </AgentProvider>
   );
 }
 
-export default App
+export default App;
