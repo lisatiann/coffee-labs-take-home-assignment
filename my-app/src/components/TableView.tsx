@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Agent from "./Agent";
 import ToolBar from "./Toolbar";
 import AddAndEditDialog from "./AddAndEditDialog";
@@ -6,6 +6,8 @@ import { Button, Table, TableBody, TableContainer, TableHead, Paper } from "@mui
 import { statusOrder } from "../constant";
 import { mockData } from "../assets/mockData";
 import { AgentType } from "../types";
+
+const LOCAL_STORAGE_KEY = "agentsData";
 
 // manually set the order of priority and status
 const getOrderValue = (orderBy: string, value: string) => {
@@ -17,10 +19,16 @@ const getOrderValue = (orderBy: string, value: string) => {
 
 const TableView: React.FC = () => {
   const toolBarTitles: Array<keyof AgentType> = ['name', 'email', 'status', 'lastSeen'];
-  const [agents, setAgents] = useState<AgentType[]>(mockData);
+  const storedAgents = localStorage.getItem(LOCAL_STORAGE_KEY);
+  const initialAgents = storedAgents ? JSON.parse(storedAgents) : mockData;
+  const [agents, setAgents] = useState<AgentType[]>(initialAgents);
   const [order, setOrder] = useState<'asc' | 'desc'>('asc');
   const [orderBy, setOrderBy] = useState<keyof AgentType>('name');
   const [open, setOpen] = useState<boolean>(false);
+
+  useEffect(() => {
+    localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(agents));
+  }, [agents]);
 
   const handleRequestSort = (property: keyof AgentType) => {
     const isAsc = orderBy === property && order === 'asc';
