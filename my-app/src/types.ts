@@ -1,4 +1,4 @@
-export interface TaskType {
+export interface AgentType {
   id: number;
   name: string;
   email: string;

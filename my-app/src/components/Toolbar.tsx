@@ -1,16 +1,15 @@
 import { TableCell, TableRow, TableSortLabel } from "@mui/material";
-import { FC } from "react";
-import { TaskType } from "../types";
+import { AgentType } from "../types";
 
 interface ToolBarProps {
   order: 'asc' | 'desc';
   orderBy: string;
-  onRequestSort: (property: keyof TaskType) => void;
+  onRequestSort: (property: keyof AgentType) => void;
+  toolBarTitles: Array<keyof AgentType>;
 }
 
-const ToolBar: FC<ToolBarProps> = ({ order, orderBy, onRequestSort }) => {
-  const toolBarTitles: Array<keyof TaskType> = ['name', 'email', 'status', 'lastSeen'];
-  const createSortHandler = (property: keyof TaskType) => () => {
+const ToolBar: React.FC<ToolBarProps> = ({ order, orderBy, onRequestSort, toolBarTitles }) => {
+  const createSortHandler = (property: keyof AgentType) => () => {
     onRequestSort(property);
   };
 

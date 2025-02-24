@@ -1,11 +1,11 @@
 import { useState } from "react";
-import Task from "./Task";
+import Agent from "./Agent";
 import ToolBar from "./Toolbar";
 import AddAndEditDialog from "./AddAndEditDialog";
 import { Button, Table, TableBody, TableContainer, TableHead, Paper } from "@mui/material";
 import { statusOrder } from "../constant";
 import { mockData } from "../assets/mockData";
-import { TaskType } from "../types";
+import { AgentType } from "../types";
 
 // manually set the order of priority and status
 const getOrderValue = (orderBy: string, value: string) => {
@@ -16,36 +16,47 @@ const getOrderValue = (orderBy: string, value: string) => {
 };
 
 const TableView: React.FC = () => {
-  const [tasks, setTasks] = useState<TaskType[]>(mockData);
+  const toolBarTitles: Array<keyof AgentType> = ['name', 'email', 'status', 'lastSeen'];
+  const [agents, setAgents] = useState<AgentType[]>(mockData);
   const [order, setOrder] = useState<'asc' | 'desc'>('asc');
-  const [orderBy, setOrderBy] = useState<keyof TaskType>('name');
+  const [orderBy, setOrderBy] = useState<keyof AgentType>('name');
   const [open, setOpen] = useState<boolean>(false);
 
-  const handleRequestSort = (property: keyof TaskType) => {
+  const handleRequestSort = (property: keyof AgentType) => {
     const isAsc = orderBy === property && order === 'asc';
     setOrder(isAsc ? 'desc' : 'asc');
     setOrderBy(property);
   };
 
-  const sortedTasks = tasks.sort((a, b) => {
+  const sortedAgents = agents.sort((a, b) => {
     const aValue = getOrderValue(orderBy, String(a[orderBy]));
     const bValue = getOrderValue(orderBy, String(b[orderBy]));
     return (aValue < bValue ? -1 : 1) * (order === 'asc' ? 1 : -1);
   });
 
-  const handleCreateTask = (task: TaskType) => {
-    setTasks([...tasks, task]);
+  const handleCreateAgent = (agent: AgentType) => {
+    setAgents([...agents, agent]);
+  };
+
+  const handleEditAgent = (updatedAgent: AgentType) => {
+    const index = agents.findIndex(agent => agent.id === updatedAgent.id);
+    setAgents([...agents.slice(0, index), updatedAgent, ...agents.slice(index + 1)]);
+  };
+
+  const handleDeleteAgent = (id: number) => {
+    setAgents(agents.filter(agent => agent.id !== id));
   };
 
   return (
     <div>
       <TableContainer component={Paper}>
-        <Button variant="contained" onClick={() => setOpen(true)}>Add Task</Button>
+        <Button variant="contained" onClick={() => setOpen(true)}>Add Agent</Button>
         <AddAndEditDialog
-          newID={tasks.length + 1}
+          isEditMode={false}
+          newID={agents.length + 1}
           open={open}
           onClose={() => setOpen(false)}
-          onCreate={handleCreateTask}
+          onCreate={handleCreateAgent}
         />
         <Table>
           <TableHead>
@@ -53,16 +64,17 @@ const TableView: React.FC = () => {
               order={order}
               orderBy={orderBy}
               onRequestSort={handleRequestSort}
+              toolBarTitles={toolBarTitles}
             />
           </TableHead>
           <TableBody>
-            {sortedTasks.map((task, index) => (
-              <Task
+            {sortedAgents.map((agent, index) => (
+              <Agent
                 key={index}
-                name={task.name}
-                email={task.email}
-                completionStatus={task.status}
-                lastSeen={task.lastSeen}
+                handleEditAgent={handleEditAgent}
+                handleDeleteAgent={handleDeleteAgent}
+                agent={agent}
+                toolBarTitles={toolBarTitles}
               />
             ))}
           </TableBody>
