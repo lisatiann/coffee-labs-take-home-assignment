@@ -5,7 +5,7 @@ This agent management app is built with Typescript, React, and Material-UI. I na
 ## Live Demo
 For the interviewer's convenience, I decided to host the project on Vercel so that I could generate a preview link
 
-[View Live](https://coffee-labs-take-home-assignment-f9psqsljn-lisatianns-projects.vercel.app/)
+[View Preview](https://coffee-labs-take-home-assignment-f9psqsljn-lisatianns-projects.vercel.app/)
 
 ## Run the Application
 
