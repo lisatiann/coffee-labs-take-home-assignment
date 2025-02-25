@@ -2,6 +2,10 @@
 
 This agent management app is built with Typescript, React, and Material-UI. I named it Coffee Labs as a play on the company's name so that other applicants are not able to find this entry. This is a CRUD application that allows users to create agents with a name, email, and status. It also reads the last seen time and converts it to a human readible string.
 
+## Live Demo
+For the interviewer's convenience, I decided to host the project on Vercel so that I could generate a preview link
+[View Live](https://coffee-labs-take-home-assignment-f9psqsljn-lisatianns-projects.vercel.app/)
+
 ## Run the Application
 
 Running the application is simple and can be achieved through the following steps:
@@ -19,9 +23,7 @@ Running the application is simple and can be achieved through the following step
 
 4. I created an array that contains some mock data so that users can immediately interact with the edit and delete functionality.
 
-5. For the interviewer's convenience, I chose to host the project on Vercel so that I could generate a preview link.
-
-6. I used TypeScript, React, and localStorage to fulfill the requirements of the assignment. All the must have requirements are complete.
+5. I used TypeScript, React, and localStorage to fulfill the requirements of the assignment. All the must have requirements are complete.
 
 ## Images of Core Screens
 Main View
