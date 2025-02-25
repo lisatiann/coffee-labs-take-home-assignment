@@ -1,8 +1,8 @@
 import { useState } from 'react';
-import { Button, TableRow, TableCell, Popover } from '@mui/material';
+import { Button, TableRow, TableCell, Popover, Chip } from '@mui/material';
 import MoreHorizIcon from '@mui/icons-material/MoreHoriz';
 import { AgentType } from '../types';
-import TaskMenu from './TaskMenu';
+import AgentMenu from './AgentMenu';
 
 interface AgentProps {
   agent: AgentType;
@@ -10,23 +10,40 @@ interface AgentProps {
 }
 
 const Agent: React.FC<AgentProps> = ({ agent, toolBarTitles }) => {
-  const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
+  const [popoverAnchorEl, setPopoverAnchorEl] = useState<null | HTMLElement>(null);
 
   const handleClick = (event: React.MouseEvent<HTMLElement>) => {
-    setAnchorEl(event.currentTarget);
+    setPopoverAnchorEl(event.currentTarget);
   };
 
   const handleClose = () => {
-    setAnchorEl(null);
+    setPopoverAnchorEl(null);
   };
 
-  const open = Boolean(anchorEl);
+  const open = Boolean(popoverAnchorEl);
+
+  const getStatusChip = (status: string) => {
+    const color = status === 'active' ? 'primary' : 'default';
+    return <Chip label={status[0].toUpperCase() + status.slice(1)} color={color as 'primary' | 'default'} />;
+  };
+
+  const formatLastSeen = (lastSeen: string) => {
+    const date = new Date(lastSeen);
+    return date.toLocaleString();
+  };
 
   return (
     <TableRow>
       {toolBarTitles.map((title, index) => (
-        <TableCell key={index}>
-          {agent[title as keyof AgentType]}
+        <TableCell 
+          key={index}
+          sx={{
+            padding: '8px',
+            paddingLeft: '16px',
+            borderLeft: index !== 0 ? '1px solid rgba(224, 224, 224, 1)' : 'none'
+          }}
+        >
+          {title === 'status' ? getStatusChip(agent[title as keyof AgentType] as string) : title === 'lastSeen' ? formatLastSeen(agent[title as keyof AgentType] as string) : agent[title as keyof AgentType]}
         </TableCell>
       ))}
       <TableCell>
@@ -35,7 +52,7 @@ const Agent: React.FC<AgentProps> = ({ agent, toolBarTitles }) => {
         </Button>
         <Popover
           open={open}
-          anchorEl={anchorEl}
+          anchorEl={popoverAnchorEl}
           onClose={handleClose}
           anchorOrigin={{
             vertical: 'bottom',
@@ -46,7 +63,7 @@ const Agent: React.FC<AgentProps> = ({ agent, toolBarTitles }) => {
             horizontal: 'left',
           }}
         >
-          <TaskMenu agent={agent} handleClose={handleClose} />
+          <AgentMenu agent={agent} handleClose={handleClose} />
         </Popover>
       </TableCell>
     </TableRow>

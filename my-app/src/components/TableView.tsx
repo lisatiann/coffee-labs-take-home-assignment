@@ -2,7 +2,8 @@ import { useState } from "react";
 import Agent from "./Agent";
 import ToolBar from "./Toolbar";
 import AddAndEditDialog from "./AddAndEditDialog";
-import { Button, Table, TableBody, TableContainer, TableHead, Paper } from "@mui/material";
+import FilterTools from "./FilterTools";
+import { Button, Table, TableBody, TableContainer, TableHead, Paper, Box, Typography, useTheme } from "@mui/material";
 import { statusOrder } from "../constant";
 import { useAgentContext } from "../context/AgentContext";
 import { AgentType } from "../types";
@@ -17,10 +18,13 @@ const getOrderValue = (orderBy: string, value: string) => {
 
 const TableView: React.FC = () => {
   const { agents } = useAgentContext();
+  const theme = useTheme();
   const toolBarTitles: Array<keyof AgentType> = ['name', 'email', 'status', 'lastSeen'];
   const [order, setOrder] = useState<'asc' | 'desc'>('asc');
   const [orderBy, setOrderBy] = useState<keyof AgentType>('name');
   const [open, setOpen] = useState<boolean>(false);
+  const [searchText, setSearchText] = useState<string>("");
+  const [filterStatus, setFilterStatus] = useState<string>("");
 
   const handleRequestSort = (property: keyof AgentType) => {
     const isAsc = orderBy === property && order === 'asc';
@@ -28,7 +32,30 @@ const TableView: React.FC = () => {
     setOrderBy(property);
   };
 
-  const sortedAgents = agents.sort((a, b) => {
+  const handleSearch = (text: string) => {
+    setSearchText(text);
+  };
+
+  const handleFilter = (status: string) => {
+    setFilterStatus(status);
+  };
+
+  const handleReset = () => {
+    setSearchText("");
+    setFilterStatus("");
+  };
+
+  const handleAddAgent = () => {
+    setOpen(true);
+  };
+
+  const filteredAgents = agents.filter(agent => {
+    const matchesSearch = agent.name.toLowerCase().includes(searchText.toLowerCase()) || agent.email.toLowerCase().includes(searchText.toLowerCase());
+    const matchesStatus = filterStatus ? agent.status === filterStatus : true;
+    return matchesSearch && matchesStatus;
+  });
+
+  const sortedAgents = filteredAgents.sort((a, b) => {
     const aValue = getOrderValue(orderBy, String(a[orderBy]));
     const bValue = getOrderValue(orderBy, String(b[orderBy]));
     return (aValue < bValue ? -1 : 1) * (order === 'asc' ? 1 : -1);
@@ -37,7 +64,24 @@ const TableView: React.FC = () => {
   return (
     <div>
       <TableContainer component={Paper}>
-        <Button variant="contained" onClick={() => setOpen(true)}>Add Agent</Button>
+        <Typography sx={{ marginTop: "16px" }} variant="h5" gutterBottom>
+          <span
+            style={{ 
+              border: `2px solid ${theme.palette.primary.main}`, 
+              padding: "8px", 
+              borderRadius: "8px", 
+              color: theme.palette.primary.main,
+            }}
+          >
+            Agent Management
+          </span>
+        </Typography>
+        <Box display="flex" alignItems="center" justifyContent="space-between" gap="8px">
+          <FilterTools onSearch={handleSearch} onFilter={handleFilter} onReset={handleReset} />
+          <Button sx={{ margin: "8px" }} variant="contained" color="primary" onClick={handleAddAgent}>
+            Add Agent
+          </Button>
+        </Box>
         <AddAndEditDialog
           isEditMode={false}
           newID={agents.length + 1}
