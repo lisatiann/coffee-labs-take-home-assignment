@@ -16,16 +16,24 @@ const ToolBar: React.FC<ToolBarProps> = ({ order, orderBy, onRequestSort, toolBa
   return (
     <TableRow>
       {toolBarTitles.map((title, index) => (
-        <TableCell key={index}>
+        <TableCell 
+          key={index}
+          sx={{
+            padding: '8px',
+            paddingLeft: '16px',
+            borderLeft: index !== 0 ? '1px solid rgba(224, 224, 224, 1)' : 'none'
+          }}
+        >
           <TableSortLabel
-            active={orderBy === title.toLowerCase()}
-            direction={orderBy === title.toLowerCase() ? order : 'asc'}
+            active={orderBy === title}
+            direction={orderBy === title ? order : 'asc'}
             onClick={createSortHandler(title)}
           >
-            {title}
+            {title !== 'lastSeen' ? title[0].toUpperCase() + title.slice(1) : 'Last Seen'}
           </TableSortLabel>
         </TableCell>
       ))}
+      <TableCell></TableCell>
     </TableRow>
   );
 };
