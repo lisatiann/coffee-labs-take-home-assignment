@@ -25,16 +25,16 @@ Running the application is simple and can be achieved through the following step
 
 ## Images of Core Screens
 Main View
-![Main View](assets/mainView.png)
+![Main View](./my-app/assets/mainView.png)
 
 Create/Edit View
-![Create/Edit View](assets/createView.png)
+![Create/Edit View](./my-app/assets/createView.png)
 
 Filter View
-![Filter View](assets/filterView.png)
+![Filter View](./my-app/assets/filterView.png)
 
 Delete View
-![Delete View](assets/deleteView.png)
+![Delete View](./my-app/assets/deleteView.png)
 
 ## SHORT Video Demo
-![Demo](assets/demo.gif)
+![Demo](./my-app/assets/demo.gif)
